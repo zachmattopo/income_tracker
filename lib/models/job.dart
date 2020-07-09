@@ -1,46 +1,52 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:income_tracker/models/cost.dart';
+import 'package:hive/hive.dart';
 
-class Job extends Equatable {
-  final int id;
+import 'cost.dart';
+
+part 'job.g.dart';
+
+// TODO: Move these 2 lines to appropriate file
+// Run a python simple http server in assets/json/ folder to retrieve data
+final String server =
+    defaultTargetPlatform == TargetPlatform.android ? '10.0.2.2' : 'localhost';
+final String jsonUrl = 'http://$server:8000/mock_data.json';
+
+@HiveType(typeId: 0)
+class Job extends HiveObject {
+  @HiveField(0)
+  final String id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final DateTime date;
+  @HiveField(3)
   final num fee;
+  @HiveField(4)
   final num commission;
-  final List<Cost> cost;
+  @HiveField(5)
+  final List<Cost> costList;
+  @HiveField(6)
   final num netEarn;
 
   Job({
-    this.id,
-    this.name,
-    this.date,
-    this.fee,
-    this.commission,
-    this.cost,
-    this.netEarn,
+    @required this.id,
+    @required this.name,
+    @required this.date,
+    @required this.fee,
+    @required this.commission,
+    this.costList,
+    @required this.netEarn,
   });
 
-  @override
-  List<Object> get props => [
-        id,
-        name,
-        date,
-        fee,
-        commission,
-        cost,
-        netEarn,
-      ];
-
   Job copyWith({
-    int id,
+    String id,
     String name,
     DateTime date,
     num fee,
     num commission,
-    List<Cost> cost,
+    List<Cost> costList,
     num netEarn,
   }) {
     return Job(
@@ -49,7 +55,7 @@ class Job extends Equatable {
       date: date ?? this.date,
       fee: fee ?? this.fee,
       commission: commission ?? this.commission,
-      cost: cost ?? this.cost,
+      costList: costList ?? this.costList,
       netEarn: netEarn ?? this.netEarn,
     );
   }
@@ -61,7 +67,7 @@ class Job extends Equatable {
       'date': date?.millisecondsSinceEpoch,
       'fee': fee,
       'commission': commission,
-      'cost': cost?.map((x) => x?.toMap())?.toList(),
+      'costList': costList?.map((x) => x?.toMap())?.toList(),
       'netEarn': netEarn,
     };
   }
@@ -70,23 +76,27 @@ class Job extends Equatable {
     if (map == null) return null;
 
     return Job(
-      id: map['id'],
-      name: map['name'],
-      date: DateTime.fromMillisecondsSinceEpoch(map['date']),
-      fee: map['fee'],
-      commission: map['commission'],
-      cost: List<Cost>.from(map['cost']?.map((x) => Cost.fromMap(x))),
-      netEarn: map['netEarn'],
+      id: map['id'] as String,
+      name: map['name'] as String,
+      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
+      fee: map['fee'] as num,
+      commission: map['commission'] as num,
+      costList: List<Cost>.from(
+          map['costList']?.map((x) => Cost.fromMap(x as Map<String, dynamic>))
+              as Iterable<dynamic>),
+      netEarn: map['netEarn'] as num,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  static Job fromJson(String source) => fromMap(json.decode(source));
+  static Job fromJson(String source) =>
+      fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'Job(id: $id, name: $name, date: $date, fee: $fee, commission: $commission, cost: $cost, netEarn: $netEarn)';
+    // ignore: lines_longer_than_80_chars
+    return 'Job(id: $id, name: $name, date: $date, fee: $fee, commission: $commission, costList: $costList, netEarn: $netEarn)';
   }
 
   @override
@@ -99,7 +109,7 @@ class Job extends Equatable {
         o.date == date &&
         o.fee == fee &&
         o.commission == commission &&
-        listEquals(o.cost, cost) &&
+        listEquals(o.costList, costList) &&
         o.netEarn == netEarn;
   }
 
@@ -110,7 +120,7 @@ class Job extends Equatable {
         date.hashCode ^
         fee.hashCode ^
         commission.hashCode ^
-        cost.hashCode ^
+        costList.hashCode ^
         netEarn.hashCode;
   }
 }
