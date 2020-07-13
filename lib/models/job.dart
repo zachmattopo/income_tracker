@@ -7,12 +7,6 @@ import 'cost.dart';
 
 part 'job.g.dart';
 
-// TODO: Move these 2 lines to appropriate file
-// Run a python simple http server in assets/json/ folder to retrieve data
-final String server =
-    defaultTargetPlatform == TargetPlatform.android ? '10.0.2.2' : 'localhost';
-final String jsonUrl = 'http://$server:8000/mock_data.json';
-
 @HiveType(typeId: 0)
 class Job extends HiveObject {
   @HiveField(0)
@@ -72,26 +66,35 @@ class Job extends HiveObject {
     };
   }
 
-  static Job fromMap(Map<String, dynamic> map) {
+  static Job fromJson(Map<String, dynamic> map) {
     if (map == null) return null;
+
+    final stringDate = map['date'] as String;
+    final date = DateTime.fromMillisecondsSinceEpoch(int.parse(stringDate));
+    final num commission = map['commission'] as num;
+    final List<Cost> costs = List<Cost>.from(
+        map['costList']?.map((x) => Cost.fromMap(x as Map<String, dynamic>))
+            as Iterable<dynamic>);
+
+    // Calculate net earning = commission - costs
+    final costsIter = costs.iterator;
+    num netEarn = commission;
+    while (costsIter.moveNext()) {
+      netEarn -= costsIter.current.amount;
+    }
 
     return Job(
       id: map['id'] as String,
       name: map['name'] as String,
-      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
+      date: date,
       fee: map['fee'] as num,
-      commission: map['commission'] as num,
-      costList: List<Cost>.from(
-          map['costList']?.map((x) => Cost.fromMap(x as Map<String, dynamic>))
-              as Iterable<dynamic>),
-      netEarn: map['netEarn'] as num,
+      commission: commission,
+      costList: costs,
+      netEarn: netEarn,
     );
   }
 
   String toJson() => json.encode(toMap());
-
-  static Job fromJson(String source) =>
-      fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

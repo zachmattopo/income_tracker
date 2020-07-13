@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class AppUtil {
-  static MaterialColor primarySwatch = Colors.cyan;
+  static MaterialColor primarySwatch = Colors.teal;
 
-  static Color secondaryColor = const Color(0xff5e35b0);
+  static Color primaryColor = Colors.teal[300];
+
+  static Color secondaryColor = Colors.deepPurple[200];
+  // const Color(0xff5e35b0);
 
   static Image appLogo = const Image(
     image: AssetImage('assets/images/logo_get.png'),

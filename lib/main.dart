@@ -4,11 +4,17 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:income_tracker/models/cost.dart';
 import 'package:income_tracker/models/job.dart';
+import 'package:income_tracker/services/api_client.dart';
 import 'package:income_tracker/utils/app_utils.dart';
 import 'package:income_tracker/widgets/page_job_earnings.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // final apiClient = ApiClient(httpClient: http.Client());
+  // final list = await apiClient.fetchJobHistory();
+  // print(list.toString());
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -36,7 +42,7 @@ class IncomeTrackerApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         brightness: Brightness.dark,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const PageJobEarnings(),
     );
   }
 }

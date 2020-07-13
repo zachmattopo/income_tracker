@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:meta/meta.dart';
 import 'package:hive/hive.dart';
+import 'package:meta/meta.dart';
 
 part 'cost.g.dart';
 
@@ -18,7 +18,7 @@ class Cost extends HiveObject {
 
   Cost({
     @required this.id,
-    @required this.jobId,
+    this.jobId,
     @required this.name,
     @required this.amount,
   });
