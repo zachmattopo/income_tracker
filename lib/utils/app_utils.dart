@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+enum IncomeDuration {
+  daily,
+  weekly,
+  monthly,
+}
+
 class AppUtil {
   static MaterialColor primarySwatch = Colors.teal;
 
@@ -18,5 +24,5 @@ class AppUtil {
 
   static String miscBoxName = 'miscBox';
 
-  static String initialSyncKey = 'firstTimeSync';
+  static String initialSyncKey = 'firstTimeSyncDone';
 }

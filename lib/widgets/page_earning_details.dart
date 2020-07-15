@@ -6,9 +6,10 @@ import 'package:intl/intl.dart';
 class PageEarningDetails extends StatelessWidget {
   final Job jobObj;
   final String jobTitle; // For Hero tag only
+  final _formKey = GlobalKey<FormState>();
   // final TextEditingController _textFieldController = TextEditingController();
 
-  const PageEarningDetails({
+  PageEarningDetails({
     Key key,
     @required this.jobObj,
     this.jobTitle,
@@ -57,10 +58,6 @@ class PageEarningDetails extends StatelessWidget {
           content,
           style: Theme.of(context).textTheme.headline4,
         ),
-        if (content == 'Net Earning')
-          Icon(Icons.monetization_on)
-        else
-          Container(),
       ],
     );
   }
@@ -88,7 +85,6 @@ class PageEarningDetails extends StatelessWidget {
                   children: <Widget>[
                     IconButton(
                       icon: Icon(Icons.edit),
-                      // TODO: Edit expense
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -100,7 +96,6 @@ class PageEarningDetails extends StatelessWidget {
                     ),
                     IconButton(
                       icon: Icon(Icons.delete_outline),
-                      // TODO: Delete expense
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -124,7 +119,6 @@ class PageEarningDetails extends StatelessWidget {
             title: const Text('Add Expense'),
             trailing: IconButton(
               icon: Icon(Icons.note_add),
-              // TODO: Add expense
               onPressed: () {
                 showDialog(
                   context: context,
@@ -143,19 +137,7 @@ class PageEarningDetails extends StatelessWidget {
   AlertDialog _buildAddEditAlert(BuildContext context, {bool editMode}) {
     return AlertDialog(
       title: editMode ? const Text('Edit Expense') : const Text('Add Expense'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: const <Widget>[
-          TextField(
-            // controller: _textFieldController,
-            decoration: InputDecoration(labelText: 'Name'),
-          ),
-          TextField(
-            // controller: _textFieldController,
-            decoration: InputDecoration(labelText: 'Amount'),
-          ),
-        ],
-      ),
+      content: ExpenseForm(formKey: _formKey),
       actions: [
         _buildCancelButton(context),
         if (editMode) _buildEditButton() else _buildAddButton(),
@@ -175,21 +157,35 @@ class PageEarningDetails extends StatelessWidget {
 
   FlatButton _buildAddButton() {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        if (_formKey.currentState.validate()) {
+          // If the form is valid, display a snackbar. In the real world,
+          // you'd often call a server or save the information in a database.
+          // TODO: Add expense
+        }
+      },
       child: const Text('Add'),
     );
   }
 
   FlatButton _buildEditButton() {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        if (_formKey.currentState.validate()) {
+          // TODO: Edit expense
+          // If the form is valid, display a snackbar. In the real world,
+          // you'd often call a server or save the information in a database.
+        }
+      },
       child: const Text('Edit'),
     );
   }
 
   FlatButton _buildDeleteButton() {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        // TODO: Delete expense
+      },
       child: const Text('Delete'),
     );
   }
@@ -198,6 +194,53 @@ class PageEarningDetails extends StatelessWidget {
     return FlatButton(
       onPressed: () => Navigator.of(context).pop(),
       child: const Text('Cancel'),
+    );
+  }
+}
+
+class ExpenseForm extends StatefulWidget {
+  final GlobalKey formKey;
+
+  const ExpenseForm({Key key, this.formKey}) : super(key: key);
+
+  @override
+  ExpenseFormState createState() {
+    return ExpenseFormState();
+  }
+}
+
+class ExpenseFormState extends State<ExpenseForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: widget.formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TextFormField(
+            // controller: _textFieldController,
+            decoration: const InputDecoration(labelText: 'Name'),
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter a name';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            // controller: _textFieldController,
+            decoration: const InputDecoration(labelText: 'Amount'),
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter an amount';
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
     );
   }
 }
