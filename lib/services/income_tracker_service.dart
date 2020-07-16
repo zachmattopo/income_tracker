@@ -43,12 +43,16 @@ class IncomeTrackerService {
   }
 
   Future<List<Job>> getMonthlyJobs(DateTime date) async {
-    final startMonth = (date.month > 1)
-        ? DateTime(date.year, date.month - 1, 0, 0)
-        : DateTime(date.year - 1, 12, 0, 0);
-    final endMonth = (date.month < 12)
-        ? DateTime(date.year, date.month + 1, 0, 0)
-        : DateTime(date.year + 1, 1, 0, 0);
+    // final startMonth = (date.month > 1)
+    //     ? DateTime(date.year, date.month - 1, 0, 0)
+    //     : DateTime(date.year - 1, 12, 0, 0);
+    // final endMonth = (date.month < 12)
+    //     ? DateTime(date.year, date.month + 1, 0, 0)
+    //     : DateTime(date.year + 1, 1, 0, 0);
+
+    // No need to check overflow/underflow since it's handled by Dart's DateTime
+    final startMonth = DateTime(date.year, date.month, 1);
+    final endMonth = DateTime(date.year, date.month + 1, 0, 23, 59, 59);
     final jobList = await hiveDatabaseService.getJobs(startMonth, endMonth);
     return jobList;
   }
