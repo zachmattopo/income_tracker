@@ -11,6 +11,8 @@ class IncomeInitial extends IncomeState {}
 
 class IncomeLoadInProgress extends IncomeState {}
 
+// class IncomeSyncSuccess extends IncomeState {}
+
 class IncomeLoadSuccess extends IncomeState {
   final Job job;
 
@@ -20,14 +22,44 @@ class IncomeLoadSuccess extends IncomeState {
   List<Object> get props => [job];
 }
 
-class IncomeForDurationLoadSuccess extends IncomeState {
-  final List<Job> jobList;
+// class IncomeForDurationDayLoadSuccess extends IncomeState {
+//   final List<Job> jobList;
 
-  const IncomeForDurationLoadSuccess({@required this.jobList})
-      : assert(jobList != null);
+//   const IncomeForDurationDayLoadSuccess({@required this.jobList})
+//       : assert(jobList != null);
+
+//   @override
+//   List<Object> get props => [jobList];
+// }
+
+// class IncomeForDurationWeekLoadSuccess extends IncomeState {
+//   final List<Job> jobList;
+
+//   const IncomeForDurationWeekLoadSuccess({@required this.jobList})
+//       : assert(jobList != null);
+
+//   @override
+//   List<Object> get props => [jobList];
+// }
+
+// class IncomeForDurationMonthLoadSuccess extends IncomeState {
+//   final List<Job> jobList;
+
+//   const IncomeForDurationMonthLoadSuccess({@required this.jobList})
+//       : assert(jobList != null);
+
+//   @override
+//   List<Object> get props => [jobList];
+// }
+
+class IncomeForDurationsLoadSuccess extends IncomeState {
+  final Map<IncomeDuration, List<Job>> jobMap;
+
+  const IncomeForDurationsLoadSuccess({@required this.jobMap})
+      : assert(jobMap != null);
 
   @override
-  List<Object> get props => [jobList];
+  List<Object> get props => [jobMap];
 }
 
 // TODO: Need this?

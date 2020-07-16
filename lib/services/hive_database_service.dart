@@ -1,5 +1,7 @@
-import 'package:income_tracker/services/database_provider.dart';
+import 'package:meta/meta.dart';
+
 import 'package:income_tracker/models/job.dart';
+import 'package:income_tracker/services/database_provider.dart';
 import 'package:income_tracker/services/database_service.dart';
 import 'package:income_tracker/utils/app_utils.dart';
 
@@ -7,7 +9,7 @@ class HiveDatabaseService implements DatabaseService {
   @override
   DatabaseProvider databaseProvider;
 
-  HiveDatabaseService(this.databaseProvider);
+  HiveDatabaseService({@required this.databaseProvider});
 
   @override
   Future<Job> insert(Job job) async {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:income_tracker/bloc/income_bloc.dart';
 import 'package:income_tracker/utils/app_utils.dart';
 import 'package:income_tracker/widgets/tab_daily_earns.dart';
 import 'package:income_tracker/widgets/tab_monthly_earns.dart';
@@ -9,6 +11,8 @@ class PageJobEarnings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // BlocProvider.of<IncomeBloc>(context).add(IncomeForDurationsRequested());
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(

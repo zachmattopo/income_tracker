@@ -18,6 +18,9 @@ class IncomeTrackerService {
   }) : assert(apiClient != null && hiveDatabaseService != null);
 
   Future<void> initialSync() async {
+    final isSynced = await getIsSyncedFlag();
+    if (isSynced) return;
+
     final jobList = await apiClient.fetchJobHistory();
     hiveDatabaseService.insertAll(jobList);
     updateIsSyncedFlag(isSynced: true);
@@ -71,7 +74,7 @@ class IncomeTrackerService {
 
   Future<bool> getIsSyncedFlag() async {
     final flag =
-        hiveDatabaseService.getMiscData(AppUtil.initialSyncKey) as bool;
+        await hiveDatabaseService.getMiscData(AppUtil.initialSyncKey) as bool;
     return flag ?? false;
   }
 }

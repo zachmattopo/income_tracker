@@ -7,16 +7,16 @@ abstract class IncomeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class IncomeHistoryRequested extends IncomeEvent {}
+// class IncomeHistoryRequested extends IncomeEvent {}
 
-class IncomeForDurationRequested extends IncomeEvent {
-  final IncomeDuration duration;
+class IncomeForDurationsRequested extends IncomeEvent {
+  // final IncomeDuration duration;
 
-  const IncomeForDurationRequested({@required this.duration})
-      : assert(duration != null);
+  // const IncomeForDurationsRequested({@required this.duration})
+  //     : assert(duration != null);
 
-  @override
-  List<Object> get props => [duration];
+  // @override
+  // List<Object> get props => [duration];
 }
 
 class IncomeUpdated extends IncomeEvent {

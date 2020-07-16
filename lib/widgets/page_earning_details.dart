@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:income_tracker/models/cost.dart';
 import 'package:income_tracker/models/job.dart';
@@ -5,14 +6,12 @@ import 'package:intl/intl.dart';
 
 class PageEarningDetails extends StatelessWidget {
   final Job jobObj;
-  final String jobTitle; // For Hero tag only
   final _formKey = GlobalKey<FormState>();
   // final TextEditingController _textFieldController = TextEditingController();
 
   PageEarningDetails({
     Key key,
     @required this.jobObj,
-    this.jobTitle,
   }) : super(key: key);
 
   @override
@@ -24,9 +23,8 @@ class PageEarningDetails extends StatelessWidget {
         children: <Widget>[
           const SizedBox(height: 20.0),
           Hero(
-              tag: jobTitle,
-              // flightShuttleBuilder: AppUtil.flightShuttleBuilder,
-              child: _buildTextGroup(context, 'Job name', jobTitle)),
+              tag: jobObj.id,
+              child: _buildTextGroup(context, 'Job name', jobObj.name)),
           const SizedBox(height: 40.0),
           _buildTextGroup(context, 'Date and time',
               DateFormat('dd/MM/yy, kk:mm').format(jobObj.date)),
@@ -54,9 +52,10 @@ class PageEarningDetails extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyText2,
         ),
         const SizedBox(height: 2.0),
-        Text(
+        AutoSizeText(
           content,
           style: Theme.of(context).textTheme.headline4,
+          maxLines: 1,
         ),
       ],
     );

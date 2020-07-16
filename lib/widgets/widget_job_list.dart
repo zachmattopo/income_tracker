@@ -4,22 +4,36 @@ import 'package:income_tracker/widgets/page_earning_details.dart';
 import 'package:intl/intl.dart';
 
 class JobListWidget extends StatelessWidget {
+  final List<Job> jobList;
+
   const JobListWidget({
     Key key,
-    @required this.mockJob,
+    @required this.jobList,
   }) : super(key: key);
-
-  final Job mockJob;
 
   @override
   Widget build(BuildContext context) {
+    if (jobList.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 24.0),
+        child: Center(
+          child: Text(
+            "You haven't completed any jobs today.\nGoGet going now!",
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: 15,
+      itemCount: jobList.length,
       itemBuilder: (context, index) {
+        final job = jobList[index];
+
         return Hero(
-          tag: mockJob.name + index.toString(),
+          tag: job.id,
           child: Card(
             child: ListTile(
               title: Row(
@@ -29,7 +43,7 @@ class JobListWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        DateFormat('dd/MM/yy, kk:mm').format(mockJob.date),
+                        DateFormat('dd/MM/yy, kk:mm').format(job.date),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -40,7 +54,7 @@ class JobListWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        mockJob.name + index.toString(),
+                        job.name,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -50,7 +64,7 @@ class JobListWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'RM ${mockJob.fee}',
+                        'RM ${job.fee}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -61,7 +75,7 @@ class JobListWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'RM ${mockJob.commission}',
+                        'RM ${job.commission}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -74,8 +88,7 @@ class JobListWidget extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PageEarningDetails(
-                      jobObj: mockJob,
-                      jobTitle: mockJob.name + index.toString(),
+                      jobObj: job,
                     ),
                   ),
                 );

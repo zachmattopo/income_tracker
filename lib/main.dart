@@ -1,26 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
+import 'package:income_tracker/bloc/income_bloc.dart';
+import 'package:income_tracker/services/api_client.dart';
+import 'package:income_tracker/services/database_provider.dart';
+import 'package:income_tracker/services/hive_database_service.dart';
+import 'package:income_tracker/services/income_tracker_service.dart';
 import 'package:income_tracker/utils/app_utils.dart';
 import 'package:income_tracker/widgets/page_job_earnings.dart';
-import 'package:income_tracker/services/api_client.dart';
-import 'package:http/http.dart' as http;
+
+import 'main_bloc_delegate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // final apiClient = ApiClient(httpClient: http.Client());
-  // final list = await apiClient.fetchJobHistory();
-  // print(list.toString());
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(IncomeTrackerApp());
+  Bloc.observer = MainBlocObserver();
+
+  final IncomeTrackerService incomeTrackerService = IncomeTrackerService(
+    apiClient: ApiClient(
+      httpClient: http.Client(),
+    ),
+    hiveDatabaseService: HiveDatabaseService(
+      databaseProvider: DatabaseProvider(),
+    ),
+  );
+
+  runApp(IncomeTrackerApp(incomeTrackerService: incomeTrackerService));
 }
 
 class IncomeTrackerApp extends StatelessWidget {
+  final IncomeTrackerService incomeTrackerService;
+
+  const IncomeTrackerApp({Key key, @required this.incomeTrackerService})
+      : assert(incomeTrackerService != null),
+        super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +53,11 @@ class IncomeTrackerApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         brightness: Brightness.dark,
       ),
-      home: const PageJobEarnings(),
+      home: BlocProvider(
+        create: (context) => IncomeBloc(incomeService: incomeTrackerService)
+          ..add(IncomeForDurationsRequested()),
+        child: const PageJobEarnings(),
+      ),
     );
   }
 }
