@@ -1,16 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
 import 'package:income_tracker/bloc/income_bloc.dart';
 import 'package:income_tracker/models/models.dart';
-import 'package:intl/intl.dart';
 
 class PageEarningDetails extends StatelessWidget {
   final String jobId;
-  final _formKey = GlobalKey<FormState>();
-  // final TextEditingController _textFieldController = TextEditingController();
 
-  PageEarningDetails({
+  const PageEarningDetails({
     Key key,
     @required this.jobId,
   }) : super(key: key);
@@ -110,7 +109,7 @@ class PageEarningDetails extends StatelessWidget {
             return Card(
               child: ListTile(
                 title: Text(cost.name),
-                subtitle: Text('RM ${cost.amount}'),
+                subtitle: Text('RM ${cost.amount.toStringAsFixed(2)}'),
                 trailing: Wrap(
                   children: <Widget>[
                     IconButton(
@@ -119,7 +118,11 @@ class PageEarningDetails extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return _buildAddEditAlert(context, editMode: true);
+                            return AddOrEditAlertDialog(
+                              editMode: true,
+                              job: job,
+                              cost: cost,
+                            );
                           },
                         );
                       },
@@ -153,24 +156,17 @@ class PageEarningDetails extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return _buildAddEditAlert(context, editMode: false);
+                    return AddOrEditAlertDialog(
+                      editMode: false,
+                      job: job,
+                      cost: null,
+                    );
                   },
                 );
               },
             ),
           ),
         )
-      ],
-    );
-  }
-
-  AlertDialog _buildAddEditAlert(BuildContext context, {bool editMode}) {
-    return AlertDialog(
-      title: editMode ? const Text('Edit Expense') : const Text('Add Expense'),
-      content: ExpenseForm(formKey: _formKey),
-      actions: [
-        _buildCancelButton(context),
-        if (editMode) _buildEditButton() else _buildAddButton(),
       ],
     );
   }
@@ -185,36 +181,9 @@ class PageEarningDetails extends StatelessWidget {
     );
   }
 
-  FlatButton _buildAddButton() {
-    return FlatButton(
-      onPressed: () {
-        if (_formKey.currentState.validate()) {
-          // If the form is valid, display a snackbar. In the real world,
-          // you'd often call a server or save the information in a database.
-          // TODO: Add expense
-        }
-      },
-      child: const Text('Add'),
-    );
-  }
-
-  FlatButton _buildEditButton() {
-    return FlatButton(
-      onPressed: () {
-        if (_formKey.currentState.validate()) {
-          // TODO: Edit expense
-          // If the form is valid, display a snackbar. In the real world,
-          // you'd often call a server or save the information in a database.
-        }
-      },
-      child: const Text('Edit'),
-    );
-  }
-
   FlatButton _buildDeleteButton(BuildContext context, Job job, String costId) {
     return FlatButton(
       onPressed: () {
-        // TODO: Delete expense
         BlocProvider.of<IncomeBloc>(context).add(
           IncomeCostDeleted(
             costId: costId,
@@ -235,49 +204,127 @@ class PageEarningDetails extends StatelessWidget {
   }
 }
 
-class ExpenseForm extends StatefulWidget {
-  final GlobalKey formKey;
+class AddOrEditAlertDialog extends StatefulWidget {
+  final bool editMode;
+  final Job job;
+  final Cost cost;
 
-  const ExpenseForm({Key key, this.formKey}) : super(key: key);
+  const AddOrEditAlertDialog({
+    Key key,
+    @required this.job,
+    @required this.cost,
+    @required this.editMode,
+  }) : super(key: key);
 
   @override
-  ExpenseFormState createState() {
-    return ExpenseFormState();
+  AddOrEditAlertDialogState createState() {
+    return AddOrEditAlertDialogState();
   }
 }
 
-class ExpenseFormState extends State<ExpenseForm> {
+class AddOrEditAlertDialogState extends State<AddOrEditAlertDialog> {
+  TextEditingController _nameController;
+  TextEditingController _amountController;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(
+      text: widget.editMode ? widget.cost.name : null,
+    );
+    _amountController = TextEditingController(
+      text: widget.editMode ? widget.cost.amount.toString() : null,
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: widget.formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          TextFormField(
-            // controller: _textFieldController,
-            decoration: const InputDecoration(labelText: 'Name'),
-            keyboardType: TextInputType.text,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter a name';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            // controller: _textFieldController,
-            decoration: const InputDecoration(labelText: 'Amount'),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter an amount';
-              }
-              return null;
-            },
-          ),
-        ],
+    return AlertDialog(
+      title: widget.editMode
+          ? const Text('Edit Expense')
+          : const Text('Add Expense'),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Name'),
+              keyboardType: TextInputType.text,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter a name';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _amountController,
+              decoration: const InputDecoration(labelText: 'Amount'),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter an amount';
+                } else if (value.contains(',')) {
+                  return "Do not use the ',' char.";
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
       ),
+      actions: [
+        _buildCancelButton(context),
+        if (widget.editMode)
+          _buildEditButton(context)
+        else
+          _buildAddButton(context),
+      ],
+    );
+  }
+
+  FlatButton _buildAddButton(BuildContext context) {
+    return FlatButton(
+      onPressed: () {
+        if (_formKey.currentState.validate()) {
+          // If the form is valid, display a snackbar. In the real world,
+          // you'd often call a server or save the information in a database.
+          // TODO: Add expense
+          // Navigator.of(context).pop();
+        }
+      },
+      child: const Text('Add'),
+    );
+  }
+
+  FlatButton _buildEditButton(BuildContext context) {
+    return FlatButton(
+      onPressed: () {
+        if (_formKey.currentState.validate()) {
+          // If the form is valid, display a snackbar. In the real world,
+          // you'd often call a server or save the information in a database.
+          // TODO: Edit expense
+          // Navigator.of(context).pop();
+        }
+      },
+      child: const Text('Edit'),
+    );
+  }
+
+  FlatButton _buildCancelButton(BuildContext context) {
+    return FlatButton(
+      onPressed: () => Navigator.of(context).pop(),
+      child: const Text('Cancel'),
     );
   }
 }

@@ -72,13 +72,14 @@ class Job extends HiveObject {
     final stringDate = map['date'] as String;
     final date = DateTime.fromMillisecondsSinceEpoch(int.parse(stringDate));
     final num commission = map['commission'] as num;
+    final num twoDecimalCommission = num.parse(commission.toStringAsFixed(2));
     final List<Cost> costs = List<Cost>.from(
         map['costList']?.map((x) => Cost.fromMap(x as Map<String, dynamic>))
             as Iterable<dynamic>);
 
     // Calculate net earning = commission - costs
     final costsIter = costs.iterator;
-    num netEarn = commission;
+    num netEarn = twoDecimalCommission;
     while (costsIter.moveNext()) {
       netEarn -= costsIter.current.amount;
     }
@@ -88,7 +89,7 @@ class Job extends HiveObject {
       name: map['name'] as String,
       date: date,
       fee: map['fee'] as num,
-      commission: commission,
+      commission: twoDecimalCommission,
       costList: costs,
       netEarn: netEarn,
     );

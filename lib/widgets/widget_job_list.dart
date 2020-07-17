@@ -79,7 +79,7 @@ class JobListWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'RM ${job.fee}',
+                      'RM ${job.fee.toStringAsFixed(2)}',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -90,7 +90,7 @@ class JobListWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'RM ${job.commission}',
+                      'RM ${job.commission.toStringAsFixed(2)}',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

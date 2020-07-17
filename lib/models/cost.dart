@@ -49,11 +49,14 @@ class Cost extends HiveObject {
   static Cost fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
+    final amount = map['amount'] as num;
+    final twoDecimalAmount = num.parse(amount.toStringAsFixed(2));
+
     return Cost(
       id: map['id'] as String,
       jobId: map['jobId'] as String,
       name: map['name'] as String,
-      amount: map['amount'] as num,
+      amount: twoDecimalAmount,
     );
   }
 
