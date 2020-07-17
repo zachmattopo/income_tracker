@@ -43,20 +43,20 @@ class IncomeTrackerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Income Tracker',
-      theme: ThemeData(
-        primarySwatch: AppUtil.primarySwatch,
-        accentColor: AppUtil.secondaryColor,
-        primaryColorBrightness: Brightness.dark,
-        accentColorBrightness: Brightness.dark,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        brightness: Brightness.dark,
-      ),
-      home: BlocProvider(
-        create: (context) => IncomeBloc(incomeService: incomeTrackerService)
-          ..add(IncomeForDurationsRequested()),
-        child: const PageJobEarnings(),
+    return BlocProvider<IncomeBloc>(
+      create: (context) => IncomeBloc(incomeService: incomeTrackerService)
+        ..add(IncomeForDurationsRequested()),
+      child: MaterialApp(
+        title: 'Income Tracker',
+        theme: ThemeData(
+          primarySwatch: AppUtil.primarySwatch,
+          accentColor: AppUtil.secondaryColor,
+          primaryColorBrightness: Brightness.dark,
+          accentColorBrightness: Brightness.dark,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          brightness: Brightness.dark,
+        ),
+        home: const PageJobEarnings(),
       ),
     );
   }

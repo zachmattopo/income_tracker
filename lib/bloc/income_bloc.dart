@@ -40,7 +40,35 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
   Stream<IncomeState> mapEventToState(IncomeEvent event) async* {
     if (event is IncomeForDurationsRequested) {
       yield* _mapIncomeForDurationRequestedToState(event);
+    } else if (event is IncomeRequested) {
+      yield* _mapIncomeRequestedtoState(event);
+    } else if (event is IncomeCostDeleted) {
+      yield* _mapIncomeCostDeletedtoState(event);
     }
+  }
+
+  Stream<IncomeState> _mapIncomeRequestedtoState(IncomeRequested event) async* {
+    final job = await incomeService.getJob(event.jobId);
+    yield IncomeLoadSuccess(job: job);
+  }
+
+  Stream<IncomeState> _mapIncomeCostDeletedtoState(
+      IncomeCostDeleted event) async* {
+    yield IncomeLoadInProgress();
+
+    final job = event.job;
+
+    // Recalculate net earn with new costs
+    job.costList.removeWhere((cost) => cost.id == event.costId);
+    num newNetEarn = job.commission;
+    final costsIter = job.costList.iterator;
+    while (costsIter.moveNext()) {
+      newNetEarn -= costsIter.current.amount;
+    }
+    final Job newJob = job.copyWith(netEarn: newNetEarn);
+    await incomeService.upsertJob(newJob);
+
+    yield IncomeLoadSuccess(job: newJob);
   }
 
   // Stream<IncomeState> _mapIncomeHistoryRequestedToState() async* {
@@ -63,11 +91,6 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
       final jobsDaily = await incomeService.getDailyJobs(DateTime.now());
       final jobsWeekly = await incomeService.getWeeklyJobs(DateTime.now());
       final jobsMonthly = await incomeService.getMonthlyJobs(DateTime.now());
-
-      // Sort most recent
-      jobsDaily.sort((a, b) => (b.date).compareTo(a.date));
-      jobsWeekly.sort((a, b) => (b.date).compareTo(a.date));
-      jobsMonthly.sort((a, b) => (b.date).compareTo(a.date));
 
       final jobsMap = {
         IncomeDuration.daily: jobsDaily,

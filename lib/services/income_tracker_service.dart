@@ -31,6 +31,7 @@ class IncomeTrackerService {
     final nextMidnight = DateTime(date.year, date.month, date.day + 1);
     final jobList =
         await hiveDatabaseService.getJobs(lastMidnight, nextMidnight);
+    jobList.sort((a, b) => (b.date).compareTo(a.date));
     return jobList;
   }
 
@@ -39,6 +40,7 @@ class IncomeTrackerService {
     final endWeek =
         date.add(Duration(days: DateTime.daysPerWeek - date.weekday));
     final jobList = await hiveDatabaseService.getJobs(startWeek, endWeek);
+    jobList.sort((a, b) => (b.date).compareTo(a.date));
     return jobList;
   }
 
@@ -54,11 +56,17 @@ class IncomeTrackerService {
     final startMonth = DateTime(date.year, date.month, 1);
     final endMonth = DateTime(date.year, date.month + 1, 0, 23, 59, 59);
     final jobList = await hiveDatabaseService.getJobs(startMonth, endMonth);
+    jobList.sort((a, b) => (b.date).compareTo(a.date));
     return jobList;
   }
 
-  Job upsertJob(Job job) {
-    hiveDatabaseService.update(job);
+  Future<Job> getJob(String jobId) async {
+    final job = await hiveDatabaseService.getJob(jobId);
+    return job;
+  }
+
+  Future<Job> upsertJob(Job job) async {
+    await hiveDatabaseService.upsert(job);
     return job;
   }
 

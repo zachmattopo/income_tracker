@@ -1,43 +1,74 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:income_tracker/models/cost.dart';
-import 'package:income_tracker/models/job.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:income_tracker/bloc/income_bloc.dart';
+import 'package:income_tracker/models/models.dart';
 import 'package:intl/intl.dart';
 
 class PageEarningDetails extends StatelessWidget {
-  final Job jobObj;
+  final String jobId;
   final _formKey = GlobalKey<FormState>();
   // final TextEditingController _textFieldController = TextEditingController();
 
   PageEarningDetails({
     Key key,
-    @required this.jobObj,
+    @required this.jobId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<IncomeBloc>(context).add(IncomeRequested(jobId: jobId));
+
     return Scaffold(
       appBar: AppBar(title: const Text('Earning Details')),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        children: <Widget>[
-          const SizedBox(height: 20.0),
-          Hero(
-              tag: jobObj.id,
-              child: _buildTextGroup(context, 'Job name', jobObj.name)),
-          const SizedBox(height: 40.0),
-          _buildTextGroup(context, 'Date and time',
-              DateFormat('dd/MM/yy, kk:mm').format(jobObj.date)),
-          const SizedBox(height: 40.0),
-          _buildTextGroup(context, 'Fee', 'RM ${jobObj.fee}'),
-          const SizedBox(height: 40.0),
-          _buildTextGroup(context, 'Commission', 'RM ${jobObj.commission}'),
-          const SizedBox(height: 40.0),
-          _buildCostList(context, jobObj.costList),
-          const SizedBox(height: 40.0),
-          _buildTextGroup(context, 'Net Earning', 'RM ${jobObj.netEarn}'),
-          const SizedBox(height: 20.0),
-        ],
+      body: BlocBuilder<IncomeBloc, IncomeState>(
+        builder: (context, state) {
+          if (state is IncomeLoadInProgress) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is IncomeLoadSuccess) {
+            final job = state.job;
+            return ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              children: <Widget>[
+                const SizedBox(height: 20.0),
+                Hero(
+                    tag: job.id,
+                    child: _buildTextGroup(context, 'Job name', job.name)),
+                const SizedBox(height: 40.0),
+                _buildTextGroup(context, 'Date and time',
+                    DateFormat('dd/MM/yy, kk:mm').format(job.date)),
+                const SizedBox(height: 40.0),
+                _buildTextGroup(
+                    context, 'Fee', 'RM ${job.fee.toStringAsFixed(2)}'),
+                const SizedBox(height: 40.0),
+                _buildTextGroup(context, 'Commission',
+                    'RM ${job.commission.toStringAsFixed(2)}'),
+                const SizedBox(height: 40.0),
+                _buildCostList(context, job),
+                const SizedBox(height: 40.0),
+                _buildTextGroup(context, 'Net Earning',
+                    'RM ${job.netEarn.toStringAsFixed(2)}'),
+                const SizedBox(height: 20.0),
+              ],
+            );
+          }
+
+          if (state is IncomeLoadFailure) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Something went wrong!',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+            );
+          }
+
+          return Container();
+        },
       ),
     );
   }
@@ -61,7 +92,9 @@ class PageEarningDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildCostList(BuildContext context, List<Cost> costList) {
+  Widget _buildCostList(BuildContext context, Job job) {
+    final costList = job.costList;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -99,7 +132,7 @@ class PageEarningDetails extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return _buildDeleteAlert(context);
+                            return _buildDeleteAlert(context, job, cost.id);
                           },
                         );
                       },
@@ -144,12 +177,12 @@ class PageEarningDetails extends StatelessWidget {
     );
   }
 
-  AlertDialog _buildDeleteAlert(BuildContext context) {
+  AlertDialog _buildDeleteAlert(BuildContext context, Job job, String costId) {
     return AlertDialog(
       title: const Text('Delete this expense?'),
       actions: [
         _buildCancelButton(context),
-        _buildDeleteButton(),
+        _buildDeleteButton(context, job, costId),
       ],
     );
   }
@@ -180,10 +213,17 @@ class PageEarningDetails extends StatelessWidget {
     );
   }
 
-  FlatButton _buildDeleteButton() {
+  FlatButton _buildDeleteButton(BuildContext context, Job job, String costId) {
     return FlatButton(
       onPressed: () {
         // TODO: Delete expense
+        BlocProvider.of<IncomeBloc>(context).add(
+          IncomeCostDeleted(
+            costId: costId,
+            job: job,
+          ),
+        );
+        Navigator.of(context).pop();
       },
       child: const Text('Delete'),
     );

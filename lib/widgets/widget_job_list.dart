@@ -1,24 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:income_tracker/bloc/income_bloc.dart';
 import 'package:income_tracker/models/job.dart';
+import 'package:income_tracker/utils/app_utils.dart';
 import 'package:income_tracker/widgets/page_earning_details.dart';
 import 'package:intl/intl.dart';
 
 class JobListWidget extends StatelessWidget {
   final List<Job> jobList;
+  final IncomeDuration duration;
 
   const JobListWidget({
     Key key,
     @required this.jobList,
+    @required this.duration,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (jobList.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.only(top: 24.0),
+      String durationString;
+      switch (duration) {
+        case IncomeDuration.daily:
+          durationString = 'today';
+          break;
+        case IncomeDuration.weekly:
+          durationString = 'this week';
+          break;
+        case IncomeDuration.monthly:
+          durationString = 'this month';
+          break;
+      }
+      return Padding(
+        padding: const EdgeInsets.only(top: 24.0),
         child: Center(
           child: Text(
-            "You haven't completed any jobs today.\nGoGet going now!",
+            "You haven't completed any jobs $durationString.\nGoGet going now!",
             textAlign: TextAlign.center,
           ),
         ),
@@ -83,15 +100,15 @@ class JobListWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PageEarningDetails(
-                      jobObj: job,
-                    ),
+                    builder: (context) => PageEarningDetails(jobId: job.id),
                   ),
                 );
+                BlocProvider.of<IncomeBloc>(context)
+                    .add(IncomeForDurationsRequested());
               },
             ),
           ),

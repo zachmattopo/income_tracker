@@ -4,13 +4,13 @@ import 'package:income_tracker/services/database_provider.dart';
 abstract class DatabaseService {
   DatabaseProvider databaseProvider;
 
-  Future<Job> insert(Job job);
+  Future<Job> upsert(Job job);
 
   Future<List<Job>> insertAll(List<Job> jobList);
 
-  Job update(Job job);
+  Future<Job> getJob(String jobId);
 
-  Job delete(Job job);
+  Future<Job> delete(Job job);
 
   Future<List<Job>> getJobs(DateTime start, DateTime end);
 

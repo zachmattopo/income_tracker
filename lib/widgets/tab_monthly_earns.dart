@@ -13,40 +13,43 @@ class TabMonthlyEarns extends StatelessWidget {
     //     const IncomeForDurationRequested(duration: IncomeDuration.monthly));
 
     return BlocBuilder<IncomeBloc, IncomeState>(
-        // buildWhen: (prevState, currState) =>
-        //     currState.runtimeType != IncomeSyncSuccess,
-        builder: (context, state) {
-      if (state is IncomeInitial || state is IncomeLoadInProgress) {
-        return const Center(child: CircularProgressIndicator());
-      }
+      buildWhen: (prevState, currState) => currState is! IncomeLoadSuccess,
+      builder: (context, state) {
+        if (state is IncomeLoadInProgress) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-      if (state is IncomeForDurationsLoadSuccess) {
-        return Scrollbar(
-          child: ListView(
-            children: <Widget>[
-              const GoalIndicatorWidget(),
-              // TODO: Insert monthly summary chart here.
-              const JobListHeaderWidget(),
-              JobListWidget(jobList: state.jobMap[IncomeDuration.monthly]),
-            ],
-          ),
-        );
-      }
-
-      if (state is IncomeLoadFailure) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              // ignore: lines_longer_than_80_chars
-              'Something went wrong!\nMock data was not available from HTTP request.',
-              style: Theme.of(context).textTheme.headline6,
+        if (state is IncomeForDurationsLoadSuccess) {
+          return Scrollbar(
+            child: ListView(
+              children: <Widget>[
+                const GoalIndicatorWidget(),
+                // TODO: Insert monthly summary chart here.
+                const JobListHeaderWidget(),
+                JobListWidget(
+                  jobList: state.jobMap[IncomeDuration.monthly],
+                  duration: IncomeDuration.monthly,
+                ),
+              ],
             ),
-          ),
-        );
-      }
+          );
+        }
 
-      return Container();
-    });
+        if (state is IncomeLoadFailure) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                // ignore: lines_longer_than_80_chars
+                'Something went wrong!\nMock data was not available from HTTP request.',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+          );
+        }
+
+        return Container();
+      },
+    );
   }
 }

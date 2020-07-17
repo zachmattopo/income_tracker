@@ -12,28 +12,30 @@ class HiveDatabaseService implements DatabaseService {
   HiveDatabaseService({@required this.databaseProvider});
 
   @override
-  Future<Job> insert(Job job) async {
+  Future<Job> upsert(Job job) async {
     final jobDb = await databaseProvider.jobDb();
-    jobDb.add(job);
+    jobDb.put(job.id, job);
     return job;
   }
 
   @override
   Future<List<Job>> insertAll(List<Job> jobList) async {
     final jobDb = await databaseProvider.jobDb();
-    jobDb.addAll(jobList);
+    final jobMap = {for (var job in jobList) job.id: job};
+    jobDb.putAll(jobMap);
     return jobList;
   }
 
   @override
-  Job update(Job job) {
-    job.save();
-    return job;
+  Future<Job> getJob(String jobId) async {
+    final jobDb = await databaseProvider.jobDb();
+    return jobDb.get(jobId);
   }
 
   @override
-  Job delete(Job job) {
-    job.delete();
+  Future<Job> delete(Job job) async {
+    final jobDb = await databaseProvider.jobDb();
+    jobDb.delete(job.id);
     return job;
   }
 
