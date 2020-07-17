@@ -54,8 +54,6 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
 
   Stream<IncomeState> _mapIncomeCostDeletedtoState(
       IncomeCostDeleted event) async* {
-    yield IncomeLoadInProgress();
-
     final job = event.job;
 
     // Recalculate net earn with new costs

@@ -49,68 +49,65 @@ class JobListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         final job = jobList[index];
 
-        return Hero(
-          tag: job.id,
-          child: Card(
-            child: ListTile(
-              title: Row(
-                children: <Widget>[
-                  Expanded(
-                    // flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        DateFormat('dd/MM/yy, kk:mm').format(job.date),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+        return Card(
+          child: ListTile(
+            title: Row(
+              children: <Widget>[
+                Expanded(
+                  // flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      DateFormat('dd/MM/yy, kk:mm').format(job.date),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        job.name,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      job.name,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'RM ${job.fee}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'RM ${job.fee}',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Expanded(
-                    // flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'RM ${job.commission}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                ),
+                Expanded(
+                  // flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'RM ${job.commission}',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ],
-              ),
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PageEarningDetails(jobId: job.id),
-                  ),
-                );
-                BlocProvider.of<IncomeBloc>(context)
-                    .add(IncomeForDurationsRequested());
-              },
+                ),
+              ],
             ),
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PageEarningDetails(jobId: job.id),
+                ),
+              );
+              BlocProvider.of<IncomeBloc>(context)
+                  .add(IncomeForDurationsRequested());
+            },
           ),
         );
       },

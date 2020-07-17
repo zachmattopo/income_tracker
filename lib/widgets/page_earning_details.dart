@@ -33,9 +33,7 @@ class PageEarningDetails extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               children: <Widget>[
                 const SizedBox(height: 20.0),
-                Hero(
-                    tag: job.id,
-                    child: _buildTextGroup(context, 'Job name', job.name)),
+                _buildTextGroup(context, 'Job name', job.name),
                 const SizedBox(height: 40.0),
                 _buildTextGroup(context, 'Date and time',
                     DateFormat('dd/MM/yy, kk:mm').format(job.date)),
