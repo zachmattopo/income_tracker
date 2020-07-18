@@ -1,6 +1,8 @@
-# income_tracker
+# A FEW NOTES BEFORE YOU RUN income_tracker:
 
-A new Flutter project.
+1. Assumption used is *Net Earn = Commission - All Costs*
+2. Recommended to run the app in `--profile` mode. I used a lot of assert checking so debug mode performance will be bad.
+3. Goal setting and earning summary graphs are work in progress.
 
 ## Getting Started
 
