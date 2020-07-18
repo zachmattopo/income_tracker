@@ -1,4 +1,4 @@
-# A FEW NOTES BEFORE YOU RUN income_tracker:
+# A few notes before you run income_tracker:
 
 1. Assumption used is *Net Earn = Commission - All Costs*
 2. Recommended to run the app in `--profile` mode. I used a lot of assert checking so debug mode performance will be bad.
