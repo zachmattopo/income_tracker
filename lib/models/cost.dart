@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 
 part 'cost.g.dart';
 
 @HiveType(typeId: 1)
-class Cost extends HiveObject {
+class Cost extends HiveObject with EquatableMixin {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -70,19 +71,27 @@ class Cost extends HiveObject {
     return 'Cost(id: $id, jobId: $jobId, name: $name, amount: $amount)';
   }
 
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
+  // @override
+  // bool operator ==(Object o) {
+  //   if (identical(this, o)) return true;
 
-    return o is Cost &&
-        o.id == id &&
-        o.jobId == jobId &&
-        o.name == name &&
-        o.amount == amount;
-  }
+  //   return o is Cost &&
+  //       o.id == id &&
+  //       o.jobId == jobId &&
+  //       o.name == name &&
+  //       o.amount == amount;
+  // }
+
+  // @override
+  // int get hashCode {
+  //   return id.hashCode ^ jobId.hashCode ^ name.hashCode ^ amount.hashCode;
+  // }
 
   @override
-  int get hashCode {
-    return id.hashCode ^ jobId.hashCode ^ name.hashCode ^ amount.hashCode;
-  }
+  List<Object> get props => [
+        id,
+        jobId,
+        name,
+        amount,
+      ];
 }

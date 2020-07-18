@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:income_tracker/utils/app_utils.dart';
 
+// TODO: Work in progress goal indicator
 class GoalIndicatorWidget extends StatelessWidget {
   const GoalIndicatorWidget({
     Key key,

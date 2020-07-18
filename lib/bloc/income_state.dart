@@ -13,6 +13,10 @@ class IncomeLoadInProgress extends IncomeState {}
 
 // class IncomeSyncSuccess extends IncomeState {}
 
+// Workaround for cost name not updating when edited
+// https://stackoverflow.com/a/60869187/9166207
+class IncomeDummyState extends IncomeState {}
+
 class IncomeLoadSuccess extends IncomeState {
   final Job job;
 

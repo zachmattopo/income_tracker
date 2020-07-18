@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
@@ -8,7 +9,7 @@ import 'cost.dart';
 part 'job.g.dart';
 
 @HiveType(typeId: 0)
-class Job extends HiveObject {
+class Job extends HiveObject with EquatableMixin {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -103,28 +104,39 @@ class Job extends HiveObject {
     return 'Job(id: $id, name: $name, date: $date, fee: $fee, commission: $commission, costList: $costList, netEarn: $netEarn)';
   }
 
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
+  // @override
+  // bool operator ==(Object o) {
+  //   if (identical(this, o)) return true;
 
-    return o is Job &&
-        o.id == id &&
-        o.name == name &&
-        o.date == date &&
-        o.fee == fee &&
-        o.commission == commission &&
-        listEquals(o.costList, costList) &&
-        o.netEarn == netEarn;
-  }
+  //   return o is Job &&
+  //       o.id == id &&
+  //       o.name == name &&
+  //       o.date == date &&
+  //       o.fee == fee &&
+  //       o.commission == commission &&
+  //       listEquals(o.costList, costList) &&
+  //       o.netEarn == netEarn;
+  // }
+
+  // @override
+  // int get hashCode {
+  //   return id.hashCode ^
+  //       name.hashCode ^
+  //       date.hashCode ^
+  //       fee.hashCode ^
+  //       commission.hashCode ^
+  //       costList.hashCode ^
+  //       netEarn.hashCode;
+  // }
 
   @override
-  int get hashCode {
-    return id.hashCode ^
-        name.hashCode ^
-        date.hashCode ^
-        fee.hashCode ^
-        commission.hashCode ^
-        costList.hashCode ^
-        netEarn.hashCode;
-  }
+  List<Object> get props => [
+        id,
+        name,
+        date,
+        fee,
+        commission,
+        costList,
+        netEarn,
+      ];
 }

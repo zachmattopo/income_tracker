@@ -28,13 +28,18 @@ class IncomeRequested extends IncomeEvent {
   List<Object> get props => [jobId];
 }
 
-class IncomeUpdated extends IncomeEvent {
+class IncomeCostUpdated extends IncomeEvent {
   final Job job;
+  final Cost cost;
 
-  const IncomeUpdated({@required this.job}) : assert(job != null);
+  const IncomeCostUpdated({@required this.cost, @required this.job})
+      : assert(cost != null && job != null);
 
   @override
-  List<Object> get props => [job];
+  List<Object> get props => [
+        cost,
+        job,
+      ];
 }
 
 class IncomeCostDeleted extends IncomeEvent {

@@ -41,18 +41,20 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
     if (event is IncomeForDurationsRequested) {
       yield* _mapIncomeForDurationRequestedToState(event);
     } else if (event is IncomeRequested) {
-      yield* _mapIncomeRequestedtoState(event);
+      yield* _mapIncomeRequestedToState(event);
     } else if (event is IncomeCostDeleted) {
-      yield* _mapIncomeCostDeletedtoState(event);
+      yield* _mapIncomeCostDeletedToState(event);
+    } else if (event is IncomeCostUpdated) {
+      yield* _mapIncomeCostUpdatedToState(event);
     }
   }
 
-  Stream<IncomeState> _mapIncomeRequestedtoState(IncomeRequested event) async* {
+  Stream<IncomeState> _mapIncomeRequestedToState(IncomeRequested event) async* {
     final job = await incomeService.getJob(event.jobId);
     yield IncomeLoadSuccess(job: job);
   }
 
-  Stream<IncomeState> _mapIncomeCostDeletedtoState(
+  Stream<IncomeState> _mapIncomeCostDeletedToState(
       IncomeCostDeleted event) async* {
     final job = event.job;
 
@@ -67,6 +69,30 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
     await incomeService.upsertJob(newJob);
 
     yield IncomeLoadSuccess(job: newJob);
+  }
+
+  Stream<IncomeState> _mapIncomeCostUpdatedToState(
+      IncomeCostUpdated event) async* {
+    // https://stackoverflow.com/a/60869187/9166207
+    yield IncomeDummyState();
+
+    final job = event.job;
+    final costUpdate = event.cost;
+
+    // Replace old cost obj
+    job.costList.removeWhere((cost) => cost.id == costUpdate.id);
+    job.costList.add(costUpdate);
+
+    // Recalculate new earn with updated costs
+    num newNetEarn = job.commission;
+    final costsIter = job.costList.iterator;
+    while (costsIter.moveNext()) {
+      newNetEarn -= costsIter.current.amount;
+    }
+    final Job jobUpdate = job.copyWith(netEarn: newNetEarn);
+    await incomeService.upsertJob(jobUpdate);
+
+    yield IncomeLoadSuccess(job: jobUpdate);
   }
 
   // Stream<IncomeState> _mapIncomeHistoryRequestedToState() async* {

@@ -41,7 +41,8 @@ class TabDailyEarns extends StatelessWidget {
     //     netEarn: 25.06);
 
     return BlocBuilder<IncomeBloc, IncomeState>(
-      buildWhen: (prevState, currState) => currState is! IncomeLoadSuccess,
+      buildWhen: (prevState, currState) =>
+          currState is! IncomeLoadSuccess && currState is! IncomeDummyState,
       builder: (context, state) {
         if (state is IncomeLoadInProgress) {
           return const Center(child: CircularProgressIndicator());

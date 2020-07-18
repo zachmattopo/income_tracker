@@ -8,16 +8,13 @@ part of 'job.dart';
 
 class JobAdapter extends TypeAdapter<Job> {
   @override
-  // ignore: type_annotate_public_apis
-  final typeId = 0;
+  final int typeId = 0;
 
   @override
   Job read(BinaryReader reader) {
-    // ignore: prefer_final_locals
-    var numOfFields = reader.readByte();
-    // ignore: prefer_final_locals
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final int numOfFields = reader.readByte();
+    final Map<int, dynamic> fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Job(
       id: fields[0] as String,

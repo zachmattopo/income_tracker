@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-
 import 'package:income_tracker/bloc/income_bloc.dart';
 import 'package:income_tracker/models/models.dart';
+import 'package:income_tracker/widgets/widget_add_or_edit_alert_dialog.dart';
+import 'package:intl/intl.dart';
 
 class PageEarningDetails extends StatelessWidget {
   final String jobId;
@@ -193,131 +193,6 @@ class PageEarningDetails extends StatelessWidget {
         Navigator.of(context).pop();
       },
       child: const Text('Delete'),
-    );
-  }
-
-  FlatButton _buildCancelButton(BuildContext context) {
-    return FlatButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: const Text('Cancel'),
-    );
-  }
-}
-
-class AddOrEditAlertDialog extends StatefulWidget {
-  final bool editMode;
-  final Job job;
-  final Cost cost;
-
-  const AddOrEditAlertDialog({
-    Key key,
-    @required this.job,
-    @required this.cost,
-    @required this.editMode,
-  }) : super(key: key);
-
-  @override
-  AddOrEditAlertDialogState createState() {
-    return AddOrEditAlertDialogState();
-  }
-}
-
-class AddOrEditAlertDialogState extends State<AddOrEditAlertDialog> {
-  TextEditingController _nameController;
-  TextEditingController _amountController;
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(
-      text: widget.editMode ? widget.cost.name : null,
-    );
-    _amountController = TextEditingController(
-      text: widget.editMode ? widget.cost.amount.toString() : null,
-    );
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _amountController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: widget.editMode
-          ? const Text('Edit Expense')
-          : const Text('Add Expense'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _amountController,
-              decoration: const InputDecoration(labelText: 'Amount'),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter an amount';
-                } else if (value.contains(',')) {
-                  return "Do not use the ',' char.";
-                }
-                return null;
-              },
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        _buildCancelButton(context),
-        if (widget.editMode)
-          _buildEditButton(context)
-        else
-          _buildAddButton(context),
-      ],
-    );
-  }
-
-  FlatButton _buildAddButton(BuildContext context) {
-    return FlatButton(
-      onPressed: () {
-        if (_formKey.currentState.validate()) {
-          // If the form is valid, display a snackbar. In the real world,
-          // you'd often call a server or save the information in a database.
-          // TODO: Add expense
-          // Navigator.of(context).pop();
-        }
-      },
-      child: const Text('Add'),
-    );
-  }
-
-  FlatButton _buildEditButton(BuildContext context) {
-    return FlatButton(
-      onPressed: () {
-        if (_formKey.currentState.validate()) {
-          // If the form is valid, display a snackbar. In the real world,
-          // you'd often call a server or save the information in a database.
-          // TODO: Edit expense
-          // Navigator.of(context).pop();
-        }
-      },
-      child: const Text('Edit'),
     );
   }
 
