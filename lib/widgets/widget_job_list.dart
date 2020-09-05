@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:income_tracker/bloc/income_bloc.dart';
 import 'package:income_tracker/models/job.dart';
 import 'package:income_tracker/utils/app_utils.dart';
-import 'package:income_tracker/widgets/page_earning_details.dart';
-import 'package:intl/intl.dart';
+import 'package:income_tracker/widgets/widget_job_card.dart';
 
 class JobListWidget extends StatelessWidget {
   final List<Job> jobList;
@@ -47,69 +44,7 @@ class JobListWidget extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: jobList.length,
       itemBuilder: (context, index) {
-        final job = jobList[index];
-
-        return Card(
-          child: ListTile(
-            title: Row(
-              children: <Widget>[
-                Expanded(
-                  // flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      DateFormat('dd/MM/yy, kk:mm').format(job.date),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      job.name,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'RM ${job.fee.toStringAsFixed(2)}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  // flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'RM ${job.commission.toStringAsFixed(2)}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            onTap: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PageEarningDetails(jobId: job.id),
-                ),
-              );
-              BlocProvider.of<IncomeBloc>(context)
-                  .add(IncomeForDurationsRequested());
-            },
-          ),
-        );
+        return JobCardWidget(job: jobList[index]);
       },
     );
   }

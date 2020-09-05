@@ -27,19 +27,19 @@ dependencies:
   # Generate code for building apps with Flutter based on your designs in Adobe XD with the "XD to Flutter" plugin.
   # This package contains helper widgets used by the plugin.
   # https://pub.dev/packages/adobe_xd
-  adobe_xd: ^0.1.4
+  adobe_xd: ^1.0.0+1
 
   # A Flutter package that helps implement the BLoC pattern.
   # https://pub.dev/packages/flutter_bloc
-  flutter_bloc: ^5.0.1
+  flutter_bloc: ^6.0.5
 
   # A composable, Future-based library for making HTTP requests.
   # https://pub.dev/packages/http
-  http: ^0.12.1
+  http: ^0.12.2
 
   # Simplify equality comparisons
   # https://pub.dev/packages/equatable
-  equatable: ^1.2.0
+  equatable: ^1.2.4
 
   # Hand-picked, open-source, community-driven collection of lint rules for Dart and Flutter projects.
   # The set of rules follows the Effective Dart: Style Guide.
@@ -48,12 +48,15 @@ dependencies:
 
   # A library to draw fantastic charts in Flutter
   # https://pub.dev/packages/fl_chart
-  fl_chart: ^0.10.1
+  fl_chart: ^0.11.1
 
   # Hive is a lightweight and blazing fast key-value database written in pure Dart.
   # https://pub.dev/packages/hive
-  hive: ^1.4.1+1
-  hive_flutter: ^0.3.0+2
+  hive:
+  hive_flutter:
+    git:
+      url: git://github.com/hivedb/hive.git
+      path: hive_flutter
 
   # Date/number formatting and parsing.
   # https://pub.dev/packages/intl
@@ -69,7 +72,11 @@ dependencies:
 
   # Simple, fast generation of RFC4122 UUIDs.
   # https://pub.dev/packages/uuid
-  uuid: ^2.2.0
+  uuid: ^2.2.2
+
+  # High quality pre-built Animations for Flutter
+  # https://pub.dev/packages/animations
+  animations: ^1.1.2
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -15,9 +15,9 @@ class MainBlocObserver extends BlocObserver {
     super.onTransition(bloc, transition);
   }
 
-  @override
-  void onError(Bloc bloc, Object error, StackTrace stackTrace) {
-    log('onError $error at ${DateTime.now()}');
-    super.onError(bloc, error, stackTrace);
-  }
+  // @override
+  // void onError(Bloc bloc, Object error, StackTrace stackTrace) {
+  //   log('onError $error at ${DateTime.now()}');
+  //   super.onError(bloc, error, stackTrace);
+  // }
 }

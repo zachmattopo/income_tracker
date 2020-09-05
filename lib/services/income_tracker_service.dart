@@ -53,7 +53,7 @@ class IncomeTrackerService {
     //     : DateTime(date.year + 1, 1, 0, 0);
 
     // No need to check overflow/underflow since it's handled by Dart's DateTime
-    final startMonth = DateTime(date.year, date.month, 1);
+    final startMonth = DateTime(date.year, date.month);
     final endMonth = DateTime(date.year, date.month + 1, 0, 23, 59, 59);
     final jobList = await hiveDatabaseService.getJobs(startMonth, endMonth);
     jobList.sort((a, b) => (b.date).compareTo(a.date));

@@ -113,7 +113,7 @@ class PageEarningDetails extends StatelessWidget {
                 trailing: Wrap(
                   children: <Widget>[
                     IconButton(
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -128,7 +128,7 @@ class PageEarningDetails extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.delete_outline),
+                      icon: const Icon(Icons.delete_outline),
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -151,7 +151,7 @@ class PageEarningDetails extends StatelessWidget {
           child: ListTile(
             title: const Text('Add Expense'),
             trailing: IconButton(
-              icon: Icon(Icons.note_add),
+              icon: const Icon(Icons.note_add),
               onPressed: () {
                 showDialog(
                   context: context,
